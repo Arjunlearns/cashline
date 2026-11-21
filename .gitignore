@@ -1,0 +1,7 @@
+# ignore rules for node_modules, build output, env files, and Python caches
+node_modules
+.env
+dist/
+__pycache__/
+.venv/
+.codebenders/
