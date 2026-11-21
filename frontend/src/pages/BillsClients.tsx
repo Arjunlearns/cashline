@@ -109,9 +109,9 @@ export default function BillsClients() {
                 <th className="py-2 pr-4 font-normal">Client</th>
                 <th className="py-2 pr-4 font-normal">Contact</th>
                 <th className="py-2 pr-4 text-right font-normal">Invoices</th>
-                <th className="py-2 pr-4 text-right font-normal">Avg days to pay</th>
+                <th className="py-2 pr-4 text-right font-normal">Avg days, invoice to payment</th>
                 <th className="py-2 pr-4 text-right font-normal" title="Seed value used by the cash-flow forecast">
-                  Days late (seed, used by forecast)
+                  Avg days late
                 </th>
                 <th className="py-2 text-right font-normal">Outstanding</th>
               </tr>

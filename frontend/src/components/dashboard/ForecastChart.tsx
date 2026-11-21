@@ -3,6 +3,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  ReferenceDot,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -66,8 +67,22 @@ export default function ForecastChart({
     negative: Math.min(0, p.balance),
   }));
 
+  // Event dots sit on the bottom edge of the plotted range, so they never collide with the balance line.
+  const floorY = Math.min(0, ...series.map((p) => p.balance));
+  const firstShortfall = series.find((p) => p.balance < 0);
+
   return (
     <div className="tabular-nums">
+      <div className="mb-2 flex items-center gap-4 text-[11px] text-[#8a909c]">
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#34d399" }} />
+          Money in
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#f87171" }} />
+          Bills
+        </span>
+      </div>
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={data} margin={{ top: 20, right: 16, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
@@ -86,17 +101,32 @@ export default function ForecastChart({
           <Tooltip content={<ForecastTooltip />} />
           <ReferenceLine y={0} stroke="#8a909c" strokeWidth={1} />
           {markers.map((m) => {
-            const color = m.kind === "in" ? "#34d399" : "#fbbf24";
+            const color = m.kind === "in" ? "#34d399" : "#f87171";
+            const tip = `${m.label} · ${formatINR(m.amount)}`;
             return (
-              <ReferenceLine
+              <ReferenceDot
                 key={`${m.kind}-${m.date}-${m.label}`}
                 x={m.date}
-                stroke={color}
-                strokeDasharray="4 4"
-                label={{ value: m.label, position: "top", fill: color, fontSize: 10 }}
+                y={floorY}
+                ifOverflow="extendDomain"
+                shape={(p: { cx?: number; cy?: number }) => (
+                  <g>
+                    <title>{tip}</title>
+                    <circle cx={p.cx} cy={p.cy} r={4} fill={color} />
+                  </g>
+                )}
               />
             );
           })}
+          {firstShortfall && (
+            <ReferenceLine
+              x={firstShortfall.date}
+              stroke="#f87171"
+              strokeOpacity={0.6}
+              strokeDasharray="4 4"
+              label={{ value: "Cash runs out", position: "top", fill: "#f87171", fontSize: 10 }}
+            />
+          )}
           <Area
             type="monotone"
             dataKey="positive"

@@ -1,5 +1,11 @@
 {
   "dependencies": {
     "recharts": "^3.11.0"
+  },
+  "scripts": {
+    "setup": "npm --prefix frontend install && python -m pip install -r backend/requirements.txt",
+    "dev": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && python -m uvicorn main:app --port 8000",
+    "test": "npm --prefix frontend run test && cd backend && python -m unittest tests.test_reminders"
   }
 }
