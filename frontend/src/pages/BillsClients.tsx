@@ -5,8 +5,8 @@ import EmptyState from "../components/ui/EmptyState";
 
 const DAY_MS = 86_400_000;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const MUTED = "text-[#8a909c]";
-const CARD = "rounded-2xl border border-white/10 p-4";
+const MUTED = "text-text-muted";
+const CARD = "rounded-2xl border border-surface-border p-4";
 
 /** Whole days from `a` to `b` (both YYYY-MM-DD); b minus a. PURE. */
 function daysBetween(a: string, b: string): number {
@@ -54,10 +54,10 @@ export default function BillsClients() {
 
   return (
     <section className="fade-in-up mx-auto max-w-6xl space-y-6">
-      <h1 className="text-xl font-semibold text-white">Bills & Clients</h1>
+      <h1 className="text-xl font-semibold text-text">Bills & Clients</h1>
 
       <div className={CARD}>
-        <h2 className="mb-3 text-sm font-medium text-white">Recurring bills</h2>
+        <h2 className="mb-3 text-sm font-medium text-text">Recurring bills</h2>
         {bills.length === 0 ? (
           <EmptyState title="No recurring bills yet." body="Add a recurring bill to see it here." />
         ) : (
@@ -74,8 +74,8 @@ export default function BillsClients() {
             </thead>
             <tbody>
               {bills.map((b) => (
-                <tr key={b.id} className="border-t border-white/10">
-                  <td className="py-2 pr-4 text-white">{b.name}</td>
+                <tr key={b.id} className="border-t border-surface-border">
+                  <td className="py-2 pr-4 text-text">{b.name}</td>
                   <td className={`py-2 pr-4 ${MUTED}`}>{b.category}</td>
                   <td className="py-2 pr-4 text-right tabular-nums">{formatINR(b.amount)}</td>
                   <td className="py-2 pr-4 tabular-nums">{b.everyDays} days</td>
@@ -86,9 +86,9 @@ export default function BillsClients() {
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-white/10">
-                <td colSpan={2} className="pt-3 text-white">Monthly total</td>
-                <td className="pt-3 text-right font-medium tabular-nums text-white">{formatINR(monthlyTotal)}</td>
+              <tr className="border-t border-surface-border">
+                <td colSpan={2} className="pt-3 text-text">Monthly total</td>
+                <td className="pt-3 text-right font-medium tabular-nums text-text">{formatINR(monthlyTotal)}</td>
                 <td colSpan={2} />
               </tr>
             </tfoot>
@@ -98,7 +98,7 @@ export default function BillsClients() {
       </div>
 
       <div className={CARD}>
-        <h2 className="mb-3 text-sm font-medium text-white">Clients</h2>
+        <h2 className="mb-3 text-sm font-medium text-text">Clients</h2>
         {clients.length === 0 ? (
           <EmptyState title="No clients yet." body="Add a client to see their payment history here." />
         ) : (
@@ -124,8 +124,8 @@ export default function BillsClients() {
                   .filter((i) => i.status === "sent" || i.status === "overdue")
                   .reduce((sum, i) => sum + i.amount, 0);
                 return (
-                  <tr key={c.id} className="border-t border-white/10">
-                    <td className="py-2 pr-4 text-white">{c.name}</td>
+                  <tr key={c.id} className="border-t border-surface-border">
+                    <td className="py-2 pr-4 text-text">{c.name}</td>
                     <td className={`py-2 pr-4 ${MUTED}`}>{c.contact}</td>
                     <td className="py-2 pr-4 text-right tabular-nums">{own.length}</td>
                     <td className="py-2 pr-4 text-right tabular-nums">

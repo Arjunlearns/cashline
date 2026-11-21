@@ -71,26 +71,26 @@ export default function ChaseDrawer({ open, onClose, item, client, onMarkChased 
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-white/10 bg-[#0B0D10] text-white md:max-w-md">
-      <div className="flex items-start justify-between gap-4 border-b border-white/10 p-5">
+    <div className="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-surface-border bg-bg text-text md:max-w-md">
+      <div className="flex items-start justify-between gap-4 border-b border-surface-border p-5">
         <div>
           <h2 className="text-lg font-semibold">
             Chase {item.clientName} {formatINR(item.amount)}
           </h2>
-          <p className="text-sm text-white/50">Invoice {item.invoiceId}</p>
+          <p className="text-sm text-text-muted">Invoice {item.invoiceId}</p>
         </div>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="rounded-lg px-2 py-1 text-white/60 hover:bg-white/10 hover:text-white"
+          className="rounded-lg px-2 py-1 text-text-muted hover:bg-surface-border hover:text-text"
         >
           ✕
         </button>
       </div>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
-        {loading && <p className="text-sm text-white/60">Drafting reminders...</p>}
+        {loading && <p className="text-sm text-text-muted">Drafting reminders...</p>}
         {error && <ErrorCard message="Could not load drafts. Is the backend running on port 8000?" />}
 
         {response && (
@@ -104,7 +104,7 @@ export default function ChaseDrawer({ open, onClose, item, client, onMarkChased 
                   aria-selected={tone === t.key}
                   onClick={() => setTone(t.key)}
                   className={`rounded-lg px-3 py-1.5 text-sm ${
-                    tone === t.key ? "bg-white/15 text-white" : "text-white/60 hover:bg-white/10"
+                    tone === t.key ? "bg-surface-border text-text" : "text-text-muted hover:bg-surface-border"
                   }`}
                 >
                   {t.label}
@@ -113,21 +113,21 @@ export default function ChaseDrawer({ open, onClose, item, client, onMarkChased 
             </div>
 
             {response.mode === "mock" && (
-              <p className="text-xs text-white/40">Sample drafts (no API key set)</p>
+              <p className="text-xs text-text-muted">Sample drafts (no API key set)</p>
             )}
 
             <textarea
               readOnly
               rows={8}
               value={draft}
-              className="w-full resize-none rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white"
+              className="w-full resize-none rounded-xl border border-surface-border bg-surface p-3 text-sm text-text"
             />
 
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={handleCopy}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm hover:bg-white/10"
+                className="rounded-lg border border-surface-border bg-surface px-3 py-1.5 text-sm hover:bg-surface-border"
               >
                 {copied ? "Copied" : "Copy"}
               </button>
@@ -136,26 +136,26 @@ export default function ChaseDrawer({ open, onClose, item, client, onMarkChased 
                   href={`https://wa.me/${digits}?text=${encodeURIComponent(draft)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm hover:bg-white/10"
+                  className="rounded-lg border border-surface-border bg-surface px-3 py-1.5 text-sm hover:bg-surface-border"
                 >
                   Open in WhatsApp
                 </a>
               ) : (
-                <span className="text-sm text-white/40">No phone number on file</span>
+                <span className="text-sm text-text-muted">No phone number on file</span>
               )}
             </div>
           </>
         )}
       </div>
 
-      <div className="border-t border-white/10 p-5">
+      <div className="border-t border-surface-border p-5">
         <button
           type="button"
           onClick={() => {
             onMarkChased(item.invoiceId);
             onClose();
           }}
-          className="w-full rounded-lg bg-white/15 px-4 py-2 text-sm font-medium hover:bg-white/20"
+          className="w-full rounded-lg bg-surface-border px-4 py-2 text-sm font-medium text-text hover:bg-text-muted/20"
         >
           Mark as chased
         </button>

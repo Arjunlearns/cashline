@@ -4,6 +4,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Set the dark class before first paint so there is no theme flash.
+      (function () {
+        try {
+          var stored = null;
+          try {
+            stored = localStorage.getItem("cashline-theme");
+          } catch (e) {}
+          var isDark =
+            stored === "dark" || stored === "light"
+              ? stored === "dark"
+              : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.classList.toggle("dark", isDark);
+          document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
     <title>Cashline</title>
   </head>
   <body>

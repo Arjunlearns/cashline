@@ -1,15 +1,83 @@
 /* Tailwind layers and design tokens */
 @import "tailwindcss";
 
+/* Dark variant is driven by the .dark class on <html> (set by lib/theme.ts). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* Existing aliases, kept so current classes keep working. */
+  --color-border-soft: var(--surface-border);
+  --color-muted-text: var(--text-muted);
+  --color-emerald-hero: var(--success);
+  --color-amber-hero: var(--warning);
+  --color-red-hero: var(--danger);
+}
+
+/* Light theme (default). Single source of truth for all colour tokens. */
 :root {
-  --color-bg: #0b0d10;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-muted: #8a909c;
+  --bg: #f7f5f0;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-border: rgba(15, 23, 42, 0.1);
+  --text: #1e293b;
+  --text-muted: #5b6573;
+  --accent: #4f46e5;
+  --success: #047857;
+  --warning: #b45309;
+  --danger: #b91c1c;
+
+  --aurora-1: rgba(167, 243, 208, 0.55); /* mint */
+  --aurora-2: rgba(254, 215, 170, 0.55); /* peach */
+  --aurora-3: rgba(186, 230, 253, 0.55); /* sky */
+  --aurora-4: rgba(253, 230, 138, 0.35); /* warm */
+  --grain-opacity: 0.04;
+  --vignette: radial-gradient(ellipse at center, transparent 55%, rgba(120, 113, 108, 0.12));
+}
+
+/* Dark theme overrides. */
+.dark {
+  --bg: #0b0d10;
+  --surface: rgba(20, 23, 29, 0.72);
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --text: #e6e8eb;
+  --text-muted: #8a909c;
+  --accent: #818cf8;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  --aurora-1: rgba(16, 185, 129, 0.35); /* emerald */
+  --aurora-2: rgba(20, 184, 166, 0.3); /* teal */
+  --aurora-3: rgba(99, 102, 241, 0.22); /* indigo */
+  --aurora-4: rgba(52, 211, 153, 0.18); /* emerald-soft */
+  --grain-opacity: 0.05;
+  --vignette: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.25));
+}
+
+html,
+body {
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+/* Elements marked for a theme switch transition colours only, never layout. */
+[data-theme-switching] {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
 }
 
 body {
-  background: var(--color-bg);
-  color: #e6e8eb;
+  background: var(--bg);
+  color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -38,4 +106,110 @@ body {
   .fade-in-up {
     animation: none;
   }
+}
+
+/* ---- Aurora background ---- */
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate3d(6vw, -4vh, 0) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-4vw, 5vh, 0) scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.aurora-root {
+  background-color: var(--bg);
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform, opacity;
+  animation: aurora-drift 30s ease-in-out infinite alternate;
+}
+
+.aurora-blob-1 {
+  top: -15%;
+  left: -10%;
+  width: 55vmax;
+  height: 55vmax;
+  background: var(--aurora-1);
+  animation-duration: 25s;
+}
+
+.aurora-blob-2 {
+  top: 10%;
+  right: -15%;
+  width: 48vmax;
+  height: 48vmax;
+  background: var(--aurora-2);
+  animation-duration: 31s;
+  animation-delay: -8s;
+}
+
+.aurora-blob-3 {
+  bottom: -20%;
+  left: 20%;
+  width: 60vmax;
+  height: 60vmax;
+  background: var(--aurora-3);
+  animation-duration: 37s;
+  animation-delay: -14s;
+}
+
+.aurora-blob-4 {
+  bottom: -5%;
+  right: 5%;
+  width: 45vmax;
+  height: 45vmax;
+  background: var(--aurora-4);
+  animation-duration: 40s;
+  animation-delay: -22s;
+}
+
+.aurora-grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--grain-opacity);
+}
+
+.aurora-vignette {
+  position: absolute;
+  inset: 0;
+  background: var(--vignette);
+}
+
+.aurora-tint {
+  position: absolute;
+  inset: 0;
+  transition: background-color 2.5s ease;
+}
+
+html[data-cash="safe"] .aurora-tint { background-color: rgba(16, 185, 129, 0.06); }
+html[data-cash="watch"] .aurora-tint { background-color: rgba(245, 158, 11, 0.06); }
+html[data-cash="risk"] .aurora-tint { background-color: rgba(239, 68, 68, 0.06); }
+
+/* Motion control: calm mode (class) and reduced motion stop the drift entirely. */
+html.calm .aurora-blob {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none !important;
+  }
+}
+
+/* Drift pauses while the tab is hidden. */
+html[data-paused] .aurora-blob {
+  animation-play-state: paused;
 }

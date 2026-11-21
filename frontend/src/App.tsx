@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import Invoices from "./pages/Invoices";
 import BillsClients from "./pages/BillsClients";
 import { StoreProvider } from "./state/store";
+import AuroraBackground from "./components/ui/AuroraBackground";
+import ThemeToggle from "./components/ui/ThemeToggle";
 
 const TABS = ["Dashboard", "Invoices", "Bills & Clients"] as const;
 type Tab = (typeof TABS)[number];
@@ -13,20 +15,24 @@ export default function App() {
 
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-bg text-[#e6e8eb]">
-        <nav className="flex flex-wrap gap-2 border-b border-white/10 px-4 py-3 md:px-6">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`rounded-lg px-3 py-1.5 text-sm ${
-                tab === t ? "bg-white/10 text-white" : "text-[#8a909c] hover:text-white"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </nav>
+      <div className="min-h-screen text-text">
+        <AuroraBackground />
+        <header className="flex items-center justify-between gap-2 border-b border-surface-border px-4 py-3 md:px-6">
+          <nav className="flex flex-wrap items-center gap-2">
+            {TABS.map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`rounded-lg px-3 py-1.5 text-sm ${
+                  tab === t ? "bg-surface-border text-text" : "text-text-muted hover:text-text"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </nav>
+          <ThemeToggle />
+        </header>
         <main className="p-6">
           {tab === "Dashboard" && <Dashboard />}
           {tab === "Invoices" && <Invoices />}

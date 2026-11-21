@@ -11,8 +11,8 @@ interface Props {
 
 const EMPTY = { clientId: "", amount: "", description: "", dueDate: "" };
 const INPUT =
-  "w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-[#e6e8eb] outline-none focus:border-white/30";
-const LABEL = "block text-xs font-medium text-[#8a909c]";
+  "w-full rounded-lg border border-surface-border bg-transparent px-3 py-2 text-sm text-text outline-none focus:border-accent";
+const LABEL = "block text-xs font-medium text-text-muted";
 
 function isValidIsoDate(s: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
@@ -44,12 +44,12 @@ export default function InvoiceForm({ clients, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-white/10 p-5">
-      <h3 className="mb-4 text-sm font-semibold text-white">New invoice</h3>
+    <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-surface-border p-5">
+      <h3 className="mb-4 text-sm font-semibold text-text">New invoice</h3>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className={LABEL}>
           Client
-          <select className={`${INPUT} mt-1 bg-[#14161a]`} value={form.clientId} onChange={set("clientId")}>
+          <select className={`${INPUT} mt-1 bg-bg`} value={form.clientId} onChange={set("clientId")}>
             <option value="">Select a client</option>
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -80,10 +80,10 @@ export default function InvoiceForm({ clients, onSubmit }: Props) {
         </label>
       </div>
       <div className="mt-4 flex items-center justify-between gap-4">
-        <p className="text-sm text-[#f87171]" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {error ?? ""}
         </p>
-        <button type="submit" className="rounded-lg bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20">
+        <button type="submit" className="rounded-lg bg-surface-border px-4 py-2 text-sm text-text hover:bg-text-muted/20">
           Create invoice
         </button>
       </div>

@@ -8,7 +8,7 @@ export default function Invoices() {
 
   return (
     <section className="fade-in-up mx-auto max-w-6xl space-y-6">
-      <h1 className="text-xl font-semibold text-white">Invoices</h1>
+      <h1 className="text-xl font-semibold text-text">Invoices</h1>
       <InvoiceForm clients={clients} onSubmit={addInvoice} />
       <InvoiceTable
         invoices={invoices}

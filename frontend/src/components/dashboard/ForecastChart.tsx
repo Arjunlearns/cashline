@@ -1,8 +1,9 @@
 // dashboard forecast chart
 import {
   Area,
-  AreaChart,
   CartesianGrid,
+  ComposedChart,
+  Line,
   ReferenceDot,
   ReferenceLine,
   ResponsiveContainer,
@@ -33,6 +34,8 @@ interface ChartRow {
   balance: number;
   positive: number;
   negative: number;
+  /** Baseline (no scenario) balance on the same date; present only when a baseline is drawn. */
+  baseline?: number;
 }
 
 function ForecastTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
@@ -41,13 +44,14 @@ function ForecastTooltip({ active, payload }: { active?: boolean; payload?: any[
   return (
     <div
       style={{
-        background: "#0B0D10",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 8,
+        background: "var(--surface)",
+        border: "1px solid var(--surface-border)",
+        borderRadius: 12,
+        color: "var(--text)",
         padding: "8px 12px",
       }}
     >
-      <div className="text-xs text-[#8a909c]">{formatDayMonth(row.date)}</div>
+      <div className="text-xs text-muted-text">{formatDayMonth(row.date)}</div>
       <div className="font-semibold tabular-nums">{formatINR(row.balance)}</div>
     </div>
   );
@@ -56,15 +60,23 @@ function ForecastTooltip({ active, payload }: { active?: boolean; payload?: any[
 export default function ForecastChart({
   series,
   markers,
+  baselineSeries,
+  yDomain,
 }: {
   series: ForecastPoint[];
   markers: ForecastMarker[];
+  /** Baseline (no scenario) series, drawn as a faint dashed ghost line behind the active line. */
+  baselineSeries?: ForecastPoint[];
+  /** Fixed y-axis range; when absent the axis auto-scales as before. */
+  yDomain?: [number, number];
 }) {
+  const baselineByDate = baselineSeries ? new Map(baselineSeries.map((p: ForecastPoint) => [p.date, p.balance])) : null;
   const data: ChartRow[] = series.map((p) => ({
     date: p.date,
     balance: p.balance,
     positive: Math.max(0, p.balance),
     negative: Math.min(0, p.balance),
+    ...(baselineByDate ? { baseline: baselineByDate.get(p.date) } : {}),
   }));
 
   // Event dots sit on the bottom edge of the plotted range, so they never collide with the balance line.
@@ -73,35 +85,36 @@ export default function ForecastChart({
 
   return (
     <div className="tabular-nums">
-      <div className="mb-2 flex items-center gap-4 text-[11px] text-[#8a909c]">
+      <div className="mb-2 flex items-center gap-4 text-[11px] text-text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#34d399" }} />
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "var(--success)" }} />
           Money in
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#f87171" }} />
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: "var(--danger)" }} />
           Bills
         </span>
       </div>
       <ResponsiveContainer width="100%" height={280}>
-        <AreaChart data={data} margin={{ top: 20, right: 16, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+        <ComposedChart data={data} margin={{ top: 20, right: 16, bottom: 0, left: 0 }}>
+          <CartesianGrid stroke="var(--surface-border)" vertical={false} />
           <XAxis
             dataKey="date"
             tickFormatter={formatDayMonth}
-            tick={{ fill: "#8a909c", fontSize: 11 }}
+            tick={{ fill: "var(--text-muted)", fontSize: 11 }}
             minTickGap={24}
-            stroke="rgba(255,255,255,0.1)"
+            stroke="var(--surface-border)"
           />
           <YAxis
+            {...(yDomain ? { domain: yDomain } : {})}
             tickFormatter={(v: number) => v.toLocaleString("en-IN")}
-            tick={{ fill: "#8a909c", fontSize: 11 }}
-            stroke="rgba(255,255,255,0.1)"
+            tick={{ fill: "var(--text-muted)", fontSize: 11 }}
+            stroke="var(--surface-border)"
           />
           <Tooltip content={<ForecastTooltip />} />
-          <ReferenceLine y={0} stroke="#8a909c" strokeWidth={1} />
+          <ReferenceLine y={0} stroke="var(--text-muted)" strokeWidth={1} />
           {markers.map((m) => {
-            const color = m.kind === "in" ? "#34d399" : "#f87171";
+            const color = m.kind === "in" ? "var(--success)" : "var(--danger)";
             const tip = `${m.label} · ${formatINR(m.amount)}`;
             return (
               <ReferenceDot
@@ -121,29 +134,42 @@ export default function ForecastChart({
           {firstShortfall && (
             <ReferenceLine
               x={firstShortfall.date}
-              stroke="#f87171"
+              stroke="var(--danger)"
               strokeOpacity={0.6}
               strokeDasharray="4 4"
-              label={{ value: "Cash runs out", position: "top", fill: "#f87171", fontSize: 10 }}
+              label={{ value: "Cash runs out", position: "top", fill: "var(--danger)", fontSize: 10 }}
+            />
+          )}
+          {baselineSeries && (
+            <Line
+              type="monotone"
+              dataKey="baseline"
+              stroke="var(--text-muted)"
+              strokeOpacity={0.6}
+              strokeDasharray="4 4"
+              dot={false}
+              isAnimationActive={false}
             />
           )}
           <Area
             type="monotone"
             dataKey="positive"
-            stroke="#34d399"
-            fill="#34d399"
-            fillOpacity={0.15}
+            stroke="var(--success)"
+            fill="var(--success)"
+            fillOpacity={0.25}
             isAnimationActive
+            animationDuration={500}
           />
           <Area
             type="monotone"
             dataKey="negative"
-            stroke="#f87171"
-            fill="#f87171"
-            fillOpacity={0.35}
+            stroke="var(--danger)"
+            fill="var(--danger)"
+            fillOpacity={0.25}
             isAnimationActive
+            animationDuration={500}
           />
-        </AreaChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );

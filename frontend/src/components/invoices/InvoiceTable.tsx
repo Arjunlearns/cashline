@@ -23,7 +23,7 @@ interface Props {
   onMarkPaid: (id: string) => void;
 }
 
-const TH = "px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#8a909c]";
+const TH = "px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-muted";
 const TD = "px-4 py-3 text-sm";
 
 export default function InvoiceTable({ invoices, clients, today, onMarkSent, onMarkPaid }: Props) {
@@ -34,8 +34,8 @@ export default function InvoiceTable({ invoices, clients, today, onMarkSent, onM
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? id;
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-white/10">
-      <table className="min-w-full divide-y divide-white/10">
+    <div className="overflow-x-auto rounded-2xl border border-surface-border">
+      <table className="min-w-full divide-y divide-surface-border">
         <thead>
           <tr>
             <th className={TH}>Invoice</th>
@@ -47,14 +47,14 @@ export default function InvoiceTable({ invoices, clients, today, onMarkSent, onM
             <th className={TH}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/10">
+        <tbody className="divide-y divide-surface-border">
           {invoices.map((inv) => {
             const status = effectiveStatus(inv, today);
             return (
               <tr key={inv.id}>
-                <td className={`${TD} font-mono text-[#e6e8eb]`}>{inv.id}</td>
+                <td className={`${TD} font-mono text-text`}>{inv.id}</td>
                 <td className={TD}>{clientName(inv.clientId)}</td>
-                <td className={`${TD} text-[#8a909c]`}>{inv.description}</td>
+                <td className={`${TD} text-text-muted`}>{inv.description}</td>
                 <td className={`${TD} text-right tabular-nums`}>{formatINR(inv.amount)}</td>
                 <td className={`${TD} whitespace-nowrap`}>{formatDue(inv.dueDate)}</td>
                 <td className={TD}>
@@ -64,7 +64,7 @@ export default function InvoiceTable({ invoices, clients, today, onMarkSent, onM
                   {status === "draft" && (
                     <button
                       onClick={() => onMarkSent(inv.id)}
-                      className="rounded-lg border border-white/10 px-3 py-1 text-xs hover:bg-white/10"
+                      className="rounded-lg border border-surface-border px-3 py-1 text-xs hover:bg-surface-border"
                     >
                       Mark sent
                     </button>
@@ -72,7 +72,7 @@ export default function InvoiceTable({ invoices, clients, today, onMarkSent, onM
                   {(status === "sent" || status === "overdue") && (
                     <button
                       onClick={() => onMarkPaid(inv.id)}
-                      className="rounded-lg border border-white/10 px-3 py-1 text-xs hover:bg-white/10"
+                      className="rounded-lg border border-surface-border px-3 py-1 text-xs hover:bg-surface-border"
                     >
                       Mark as paid
                     </button>
