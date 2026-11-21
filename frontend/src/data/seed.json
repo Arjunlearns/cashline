@@ -1,0 +1,52 @@
+{
+  "_readme": "All dates are day offsets from 'today' (0 = today, negative = past). Use materialize() in seed.ts to turn them into real dates so the demo never goes stale. All people, numbers and businesses are fictional.",
+  "owner": {
+    "name": "Rahul Sharma",
+    "business": "Rahul Sharma Design",
+    "city": "Bengaluru",
+    "type": "Freelance brand designer",
+    "openingBalance": 10000
+  },
+  "clients": [
+    { "id": "c1", "name": "Studio Kala",          "contact": "Priya Menon",     "phone": "+919000000001", "avgDelayDays": 12, "note": "Key client. Pays in bursts after chasing." },
+    { "id": "c2", "name": "Brewline Coffee Co.",  "contact": "Arjun Nair",      "phone": "+919000000002", "avgDelayDays": 6,  "note": "Pays after one reminder." },
+    { "id": "c3", "name": "Nandini Organics",     "contact": "Nandini Rao",     "phone": "+919000000003", "avgDelayDays": 18, "note": "Always pays, always late." },
+    { "id": "c4", "name": "Tarang Fintech",      "contact": "Karthik Iyer",    "phone": "+919000000004", "avgDelayDays": 3,  "note": "Reliable. Finance team pays on the 10th." },
+    { "id": "c5", "name": "Pixel & Pine Agency",  "contact": "Sneha Kulkarni",  "phone": "+919000000005", "avgDelayDays": 22, "note": "Slowest payer. Needs a firm tone." },
+    { "id": "c6", "name": "Dr. Mehta's Dental",   "contact": "Dr. Rohan Mehta", "phone": "+919000000006", "avgDelayDays": 0,  "note": "Pays on the due date via UPI." }
+  ],
+  "invoices": [
+    { "id": "INV-1001", "clientId": "c1", "amount": 48000, "description": "Brand identity, phase 1",       "issuedOffset": -60, "dueOffset": -45, "paidOffset": -33, "status": "paid" },
+    { "id": "INV-1002", "clientId": "c2", "amount": 20000, "description": "Menu and packaging design",     "issuedOffset": -45, "dueOffset": -30, "paidOffset": -24, "status": "paid" },
+    { "id": "INV-1003", "clientId": "c4", "amount": 25000, "description": "Pitch deck design",             "issuedOffset": -50, "dueOffset": -35, "paidOffset": -32, "status": "paid" },
+
+    { "id": "INV-1004", "clientId": "c5", "amount": 9000,  "description": "Social media kit",              "issuedOffset": -53, "dueOffset": -38, "status": "overdue", "chasedCount": 2, "lastChasedOffset": -12 },
+    { "id": "INV-1005", "clientId": "c3", "amount": 10000, "description": "Label redesign, revision round","issuedOffset": -36, "dueOffset": -21, "status": "overdue", "chasedCount": 1, "lastChasedOffset": -9 },
+    { "id": "INV-1006", "clientId": "c1", "amount": 35000, "description": "Brand identity, phase 2",       "issuedOffset": -19, "dueOffset": -4,  "status": "overdue", "chasedCount": 0 },
+
+    { "id": "INV-1007", "clientId": "c4", "amount": 12000, "description": "Landing page illustrations",    "issuedOffset": -7,  "dueOffset": 8,   "status": "sent" },
+    { "id": "INV-1008", "clientId": "c2", "amount": 9000,  "description": "Seasonal poster set",           "issuedOffset": -1,  "dueOffset": 14,  "status": "sent" },
+    { "id": "INV-1009", "clientId": "c6", "amount": 12000, "description": "Clinic logo and signage",       "issuedOffset": 3,   "dueOffset": 33,  "status": "sent" },
+    { "id": "INV-1010", "clientId": "c1", "amount": 30000, "description": "Brand guidelines document",     "issuedOffset": 11,  "dueOffset": 41,  "status": "sent" },
+    { "id": "INV-1011", "clientId": "c3", "amount": 14000, "description": "Website banner set",            "issuedOffset": 22,  "dueOffset": 52,  "status": "sent" },
+
+    { "id": "INV-1012", "clientId": "c2", "amount": 15000, "description": "Loyalty card design",           "issuedOffset": 0,   "dueOffset": 30,  "status": "draft" }
+  ],
+  "bills": [
+    { "id": "b1", "name": "Rent (flat + studio corner)", "amount": 28000, "firstDueOffset": 19, "everyDays": 30, "category": "rent" },
+    { "id": "b2", "name": "Part-time assistant",         "amount": 15000, "firstDueOffset": 27, "everyDays": 30, "category": "salary" },
+    { "id": "b3", "name": "Laptop EMI",                  "amount": 7500,  "firstDueOffset": 9,  "everyDays": 30, "category": "emi" },
+    { "id": "b4", "name": "Figma and Adobe",             "amount": 4200,  "firstDueOffset": 6,  "everyDays": 30, "category": "software" },
+    { "id": "b5", "name": "Internet and phone",          "amount": 1800,  "firstDueOffset": 3,  "everyDays": 30, "category": "utilities" }
+  ],
+  "scenarios": [
+    { "id": "s1", "label": "Studio Kala pays 15 days late", "clientId": "c1", "delayDays": 15, "isDemoDefault": true },
+    { "id": "s2", "label": "Pixel & Pine never pays",       "clientId": "c5", "delayDays": 999 },
+    { "id": "s3", "label": "Lose Brewline Coffee Co.",      "clientId": "c2", "dropFutureInvoices": true }
+  ],
+  "expectedDemoResults": {
+    "note": "Verified with a simulation. Rule: expectedPaymentDay = dueDay + client.avgDelayDays; overdue invoices are expected no earlier than day 2; draft invoices are excluded.",
+    "default":   { "runwayDays": 49, "firstShortfall": "second rent payment (day 49)" },
+    "scenario_s1": { "runwayDays": 19, "firstShortfall": "first rent payment (day 19)" }
+  }
+}
