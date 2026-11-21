@@ -1,0 +1,4 @@
+# Python dependencies for the FastAPI backend
+fastapi
+uvicorn
+openai
