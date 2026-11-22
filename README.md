@@ -37,7 +37,7 @@ Cashline is a one-person back office with a 90-day cash forecast.
 
 ![Chase drawer](docs/screenshots/chase-drawer.png)
 
-![Chase drawer1](docs/screenshots/chase-drawer2.png)
+
 
 ## Quick start
 
