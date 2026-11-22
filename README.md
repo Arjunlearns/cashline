@@ -37,11 +37,7 @@ Cashline is a one-person back office with a 90-day cash forecast.
 
 ![Chase drawer](docs/screenshots/chase-drawer.png)
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 039b928498fd85499b3f7575612d3433f32c5436
 ## Quick start
 
 Requirements: Node 20+ and Python 3.10+.
