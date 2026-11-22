@@ -41,7 +41,7 @@ Requirements: Node 18+ and Python 3.10+.
 ```bash
 npm run setup   # installs frontend and backend dependencies
 npm run dev     # starts both servers
-npm test        # runs vitest and pytest
+npm test        # runs vitest and Python unittest
 ```
 
 Open the URL printed in the terminal (usually http://localhost:5173).

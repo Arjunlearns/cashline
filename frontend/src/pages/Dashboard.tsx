@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useStore, effectiveStatus } from "../state/store";
 import { formatINR } from "../lib/format";
 import { forecast, type ForecastBill, type ForecastClient, type ForecastInvoice } from "../lib/forecast";
-import ForecastChart, { type ForecastMarker } from "../components/dashboard/ForecastChart";
+import type { ForecastMarker } from "../components/dashboard/ForecastChart";
+import ForecastTimelapse from "../components/dashboard/ForecastTimelapse";
+import { axisStep } from "../components/dashboard/ForecastChart";
 import AlertStrip from "../components/dashboard/AlertStrip";
 import RunwayCard from "../components/dashboard/RunwayCard";
 import WhatIfControls from "../components/dashboard/WhatIfControls";
@@ -250,6 +252,21 @@ export default function Dashboard() {
   // Selecting a client from the risk list adds them at 15 days, unless they are already set.
   const addClient = (clientId: string) => setDelays((d) => (clientId in d ? d : { ...d, [clientId]: 15 }));
 
+  // Active scenario name for the hero: a matching preset's label, else a generic label; null for the baseline.
+  const delayKeys = Object.keys(delays);
+  const activeScenario =
+    delayKeys.length === 0
+      ? null
+      : (presets.find(
+          (p) =>
+            Object.keys(p.delays).length === delayKeys.length &&
+            delayKeys.every((k) => k in p.delays && p.delays[k] === delays[k]),
+        )?.label ?? "Custom what-if");
+
+  // Greeting uses the local hour at render time.
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
   // Headline metrics for the what-if panel.
   const baselineMetrics = baseline
     ? { runwayDays: baseline.runwayDays, daysInRed: daysInRed(baseline.series), worstGap: worstCashGap(baseline.series) }
@@ -263,21 +280,40 @@ export default function Dashboard() {
   const yLow = Math.min(...balances);
   const yHigh = Math.max(...balances);
   const yPad = (yHigh - yLow) * 0.05 || 1;
-  const yDomain: [number, number] = [Math.floor(yLow - yPad), Math.ceil(yHigh + yPad)];
+  // Whole multiples of the axis step (10,000 / 20,000 / 30,000 / 50,000); 0 is always inside, with one tick past each end.
+  const yStep = axisStep(yLow - yPad, yHigh + yPad);
+  const yDomain: [number, number] = [
+    Math.floor((yLow - yPad) / yStep) * yStep,
+    Math.ceil((yHigh + yPad) / yStep) * yStep,
+  ];
 
   return (
     <>
+      <section className="fade-in-up mb-6">
+        <p className="text-lg font-semibold">{`${greeting}, Rahul`}</p>
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-text-muted">
+          <span>Rahul Sharma Design</span>
+          <span
+            title="All people and numbers are fictional."
+            className="rounded-full border border-surface-border px-2 py-0.5 text-xs"
+          >
+            Sample data
+          </span>
+        </div>
+      </section>
+
       <section className="fade-in-up mb-6">
         <AlertStrip alerts={alerts} onAction={(a) => setChaseId(a.invoiceId)} />
       </section>
 
       {current && (
-        <section className="fade-in-up mb-6">
+        <section className="fade-in-up card-stagger mb-6" style={{ animationDelay: "60ms" }}>
           <RunwayCard
             runwayDays={current.runwayDays}
             horizon={90}
             firstShortfall={firstShortfall}
             deltaDays={deltaDays}
+            scenarioLabel={activeScenario}
           />
         </section>
       )}
@@ -292,7 +328,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="fade-in-up grid gap-4 sm:grid-cols-3">
+      <section className="fade-in-up card-stagger grid gap-4 sm:grid-cols-3" style={{ animationDelay: "120ms" }}>
         {ready ? (
           <>
             <Stat label="Opening balance" value={owner.openingBalance} />
@@ -308,7 +344,7 @@ export default function Dashboard() {
         )}
       </section>
 
-      <section className="fade-in-up mt-8 rounded-2xl border border-surface-border p-5">
+      <section className="fade-in-up card-stagger chart-card mt-8 rounded-2xl border border-surface-border p-5" style={{ animationDelay: "180ms" }}>
         <h2 className="mb-3 text-lg font-semibold">90-day forecast</h2>
         {!ready ? (
           <Skeleton className="h-64 w-full" />
@@ -318,7 +354,7 @@ export default function Dashboard() {
             <p className="mt-1 text-xs text-text-muted">{forecastError}</p>
           </div>
         ) : (
-          <ForecastChart series={series} markers={markers} baselineSeries={baselineSeries} yDomain={yDomain} />
+          <ForecastTimelapse series={series} markers={markers} baselineSeries={baselineSeries} yDomain={yDomain} />
         )}
       </section>
 

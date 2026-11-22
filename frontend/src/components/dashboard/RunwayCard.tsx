@@ -6,6 +6,8 @@ export interface RunwayCardProps {
   horizon: number;
   firstShortfall: { date: string; beforeBill: string | null } | null;
   deltaDays: number | null;
+  /** Name of the active what-if scenario, or null when the baseline is shown. */
+  scenarioLabel: string | null;
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -16,7 +18,7 @@ function formatDayMonth(ymd: string): string {
   return `${Number(d)} ${MONTHS[Number(m) - 1] ?? ""}`;
 }
 
-export default function RunwayCard({ runwayDays, horizon, firstShortfall, deltaDays }: RunwayCardProps) {
+export default function RunwayCard({ runwayDays, horizon, firstShortfall, deltaDays, scenarioLabel }: RunwayCardProps) {
   const isSafeAll = runwayDays >= horizon;
   const shown = Math.round(useCountUp(runwayDays, 600));
 
@@ -28,6 +30,15 @@ export default function RunwayCard({ runwayDays, horizon, firstShortfall, deltaD
         ? "text-amber-hero"
         : "text-red-hero";
 
+  // Headline wording follows the same tone bands as the colour.
+  const headline = isSafeAll
+    ? "You're safe for 90+ days"
+    : runwayDays >= 45
+      ? `You're safe for ${shown} days`
+      : runwayDays >= 20
+        ? `Heads up: ${shown} days of cash left`
+        : `Cash runs out in ${shown} days`;
+
   const deltaLabel =
     deltaDays === null || deltaDays === 0
       ? null
@@ -38,11 +49,16 @@ export default function RunwayCard({ runwayDays, horizon, firstShortfall, deltaD
       <div className="text-sm text-muted-text">Cash runway</div>
       <div className="mt-2 flex flex-wrap items-baseline gap-3">
         <div className={`text-5xl font-semibold tabular-nums transition-colors duration-500 ${tone}`}>
-          {isSafeAll ? "You're safe for 90+ days" : `You're safe for ${shown} days`}
+          {headline}
         </div>
         {deltaLabel && (
           <span className="rounded-full border border-border-soft px-2.5 py-0.5 text-xs tabular-nums text-muted-text">
             {deltaLabel}
+          </span>
+        )}
+        {scenarioLabel && (
+          <span className="rounded-full border border-accent px-2.5 py-0.5 text-xs text-text-muted">
+            {`Scenario: ${scenarioLabel}`}
           </span>
         )}
       </div>

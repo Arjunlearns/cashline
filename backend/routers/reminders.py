@@ -31,7 +31,18 @@ def inr_group(n: int) -> str:
     return f"₹{sign}{','.join(groups)},{tail}"
 
 
-@router.post("/draft")
+class ReminderDrafts(BaseModel):
+    friendly: str
+    firm: str
+    final: str
+
+
+class ReminderDraftResponse(BaseModel):
+    mode: str
+    drafts: ReminderDrafts
+
+
+@router.post("/draft", response_model=ReminderDraftResponse)
 def create_reminder_draft(payload: ReminderRequest) -> dict:
     mode, drafts = draft_reminders(
         payload.clientName,

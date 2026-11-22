@@ -54,12 +54,7 @@ export default function WhatIfMetrics({ baseline, current, active }: WhatIfMetri
 
   return (
     <div>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Metric
-          label="Runway (days)"
-          value={`${shown.runwayDays}`}
-          delta={active ? { text: `${signed(dRunway)} days`, tone: toneFor(dRunway, true) } : null}
-        />
+      <div className="grid gap-4 sm:grid-cols-2">
         <Metric
           label="Days in the red"
           value={`${shown.daysInRed}`}

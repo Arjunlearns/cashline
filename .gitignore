@@ -3,6 +3,7 @@ node_modules
 .env
 dist/
 __pycache__/
+*.pyc
 .venv/
 .codebenders/
 *.tsbuildinfo
