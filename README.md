@@ -6,7 +6,7 @@
 
 ![Cashline demo](docs/demo.gif)
 
-▶ [Watch the full 3-minute demo](DEMO_VIDEO_LINK)
+▶ [Watch the full 7-minute demo](https://youtu.be/3MGVbyPKiNY)
 
 ---
 
