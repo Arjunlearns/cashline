@@ -1,7 +1,7 @@
 # How Cashline was built in Codebenders
 
 
-Prompt #1:
+**Prompt #1:**
 
 You are helping me build "Cashline", a one-person back office and cash
 forecast tool for freelance designers in India. This is a hackathon project
@@ -53,7 +53,7 @@ conventions) and the folder structure, and wait for my approval. Then we build i
 vertical slices, and I'll commit after each. Ask me before any large rewrite.
 Prefer diffs over regenerating whole files.
 
-Prompt #2
+**Prompt #2**
 
 SEED DATA: Already provided in src/data/seed.json with a loader in
 src/data/seed.ts (dates are day offsets from today; call materialize()).
@@ -63,17 +63,48 @@ Acceptance test: forecast() on this data gives runwayDays = 49 by default and
 19 with scenario s1 (Studio Kala pays 15 days late). Write a vitest test that
 asserts both.
 
-Follow-up Prompts:
-#1 Scaffold: "Scaffold Vite + React + TS + Tailwind and FastAPI. Load seed.ts. Show the Dashboard shell with static numbers from the seed (opening balance, total outstanding, overdue)."
-#2 Forecast engine: "Implement src/lib/forecast.ts as a pure function per NOTES.md, with vitest tests asserting runway 49 and 19. Don't touch the UI yet." Run the tests yourself before moving on.
-#3 Chart: "Wire forecast output into a Recharts area chart with a red zone below zero and invoice and bill markers."
-#4 What-if: "Add scenario chips from seed.json, a delay slider for the selected client, the ghosted original line, and the runway card colour logic (emerald, amber, red)."
-#5 Who owes me and alerts: "Build the ageing list (0-30, 31-60, 60+) and the alert strip. The top alert should be 'Chase Studio Kala ₹35,000, never chased'."
-#6 Invoices: "Invoice table with status pills, the 4-field create form, state transitions, and Mark as paid. New invoices must flow into the forecast."
-#7 Chase drawer: "FastAPI endpoint for 3-tone WhatsApp drafts, mock mode when no API key, Copy, wa.me link, and Mark as chased (updates chasedCount)."
-#8 Bills and clients page: "Recurring bills list and a client table showing average days-to-pay."
-#9 Polish: "Motion, count-up numbers, empty, loading and error states, responsive layout. Don't change forecast logic."
-#10 Docs: "Write the README from my skeleton, and add a .env.example."
+## The build prompts, in order
+
+- **1. Scaffold**
+  - Prompt: "Scaffold Vite + React + TS + Tailwind and FastAPI. Load `seed.ts`. Show the Dashboard shell with static numbers from the seed (opening balance, total outstanding, overdue)."
+  - Produced: the project skeleton and a dashboard shell showing real seed numbers.
+
+- **2. Forecast engine**
+  - Prompt: "Implement `src/lib/forecast.ts` as a pure function per `NOTES.md`, with vitest tests asserting runway 49 and 19. Don't touch the UI yet."
+  - Produced: the pure forecast function and tests for the two demo numbers.
+  - Check: I ran the tests myself before moving on.
+
+- **3. Chart**
+  - Prompt: "Wire forecast output into a Recharts area chart with a red zone below zero and invoice and bill markers."
+  - Produced: the 90-day forecast chart with a shortfall area and event markers.
+
+- **4. What-if**
+  - Prompt: "Add scenario chips from `seed.json`, a delay slider for the selected client, the ghosted original line, and the runway card colour logic (emerald, amber, red)."
+  - Produced: the runway hero card, scenario chips, delay slider and ghost line.
+
+- **5. Who owes me and alerts**
+  - Prompt: "Build the ageing list (0-30, 31-60, 60+) and the alert strip. The top alert should be 'Chase Studio Kala ₹35,000, never chased'."
+  - Produced: ageing buckets and the alert strip, with tests for both.
+
+- **6. Invoices**
+  - Prompt: "Invoice table with status pills, the 4-field create form, state transitions, and Mark as paid. New invoices must flow into the forecast."
+  - Produced: the Invoices page, where new and paid invoices update the forecast.
+
+- **7. Chase drawer**
+  - Prompt: "FastAPI endpoint for 3-tone WhatsApp drafts, mock mode when no API key, Copy, `wa.me` link, and Mark as chased (updates `chasedCount`)."
+  - Produced: the reminder endpoint, template fallback and the drawer.
+
+- **8. Bills and clients page**
+  - Prompt: "Recurring bills list and a client table showing average days-to-pay."
+  - Produced: the Bills & Clients page.
+
+- **9. Polish**
+  - Prompt: "Motion, count-up numbers, empty, loading and error states, responsive layout. Don't change forecast logic."
+  - Produced: animation, state handling and responsive layout.
+
+- **10. Docs**
+  - Prompt: "Write the README from my skeleton, and add a `.env.example`."
+  - Produced: the first README and the environment template.
 
 ## What went wrong, and what it taught me
 
